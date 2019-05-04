@@ -21,9 +21,9 @@ def home():
     return render_template('home.html')
 
 
-@app.route("/signUp")
-def signup():
-    return render_template('users/signup.html')
+@app.route("/sign_up")
+def sign_up():
+    return render_template('users/sign_up.html')
 
 
 if __name__ == '__main__':
