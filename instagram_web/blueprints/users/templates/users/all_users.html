@@ -1,0 +1,12 @@
+{% extends "_layout.html" %}
+
+{% block content %}
+
+<h1>I am here</h1>
+<ul>
+    {%for name in User.select()%}
+    <li>{{name.username |e}}</li>
+    {%endfor%}
+</ul>
+
+{% endblock %}

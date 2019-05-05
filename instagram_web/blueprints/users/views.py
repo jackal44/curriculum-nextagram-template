@@ -27,14 +27,20 @@ def create():
         return render_template('users/sign_up.html', username=request.args['username'], email=request.args['email'], password=request.args['password'], errors=s.errors)
 
 
-@users_blueprint.route('/<username>', methods=["GET"])
-def show(username):
-    pass
+@users_blueprint.route('/<username_id>', methods=["GET"])
+def show(username_id):
+
+    for person in user.User.select():
+        username = person.username
+        return person.username
+    # render_template('users/individual_user.html', username=username)
 
 
 @users_blueprint.route('/', methods=["GET"])
 def index():
-    return "USERS"
+    pass
+
+    # render_template('users/all_users.html')
 
 
 @users_blueprint.route('/<id>/edit', methods=['GET'])
