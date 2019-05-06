@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, flash, request, redirect, url_for, session
 from werkzeug.security import generate_password_hash
-from models import user
+from models.user import User
+from flask_login import login_user
 
 
 users_blueprint = Blueprint('users',
@@ -16,12 +17,13 @@ def new():
 @users_blueprint.route('/new/create', methods=['POST'])
 def create():
     hashed_password = generate_password_hash(request.form['password'])
-    s = user.User(username=request.form['username'],
-                  email=request.form['email'], password=hashed_password)
+    s = User(username=request.form['username'],
+             email=request.form['email'], password=hashed_password)
 
     if s.save():
-        flash("Successfully saved")
-        return redirect(url_for('users.new'))
+        flash("Successfully saved!")
+        login_user(s, force=True)
+        return redirect(url_for('sessions.matt_test'))
 
     else:
         return render_template('users/new.html', username=request.form['username'], email=request.form['email'], password=request.form['password'], errors=s.errors)

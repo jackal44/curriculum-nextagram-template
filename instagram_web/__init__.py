@@ -6,7 +6,8 @@ from instagram_web.blueprints.users.views import users_blueprint
 from instagram_web.blueprints.sessions.views import sessions_blueprint
 from flask_assets import Environment, Bundle
 from .util.assets import bundles
-from models import user
+from models.user import User
+from app import login_manager
 
 
 assets = Environment(app)
@@ -16,6 +17,11 @@ app.register_blueprint(sessions_blueprint, url_prefix="/sessions")
 app.register_blueprint(users_blueprint, url_prefix="/users")
 
 csrf = CSRFProtect(app)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.get_by_id(user_id)
 
 
 @app.errorhandler(CSRFError)
