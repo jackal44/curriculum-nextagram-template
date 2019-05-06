@@ -1,0 +1,8 @@
+{% extends "_layout.html" %}
+
+{%block content%}
+{%if current_user.is_authenticated%}
+<h1>Hi {{current_user.username}}</h1>
+{%endif%}
+<h1>I am try.html, hello {{username}}</h1>
+{%endblock%}

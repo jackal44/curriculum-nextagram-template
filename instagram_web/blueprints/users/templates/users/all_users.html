@@ -2,11 +2,8 @@
 
 {% block content %}
 
-<h1>I am here</h1>
-<ul>
-    {%for name in User.select()%}
-    <li>{{name.username |e}}</li>
-    {%endfor%}
-</ul>
-
+<h1>User list</h1>
+{%for username in every_user%}
+<li>{{username}}</li>
+{%endfor%}
 {% endblock %}

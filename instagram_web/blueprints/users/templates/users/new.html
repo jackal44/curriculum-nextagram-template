@@ -1,7 +1,8 @@
 {% extends "_layout.html" %}
 
 {% block content %}
-<form methods="GET" action={{url_for ('users.create')}}>
+<form method="POST" action={{url_for ('users.create')}}>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 
     <div class="form-group">
         <label for="username">Username:</label>
@@ -16,6 +17,6 @@
         <input type="password" class="form-control" placeholder="Password" name=password>
     </div>
 
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">Sign up</button>
 </form>
 {%endblock%}
