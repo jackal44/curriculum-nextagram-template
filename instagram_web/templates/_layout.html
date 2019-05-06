@@ -6,10 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <link rel="shortcut icon" href="{{ url_for('static', filename='image/favicon.ico') }}">
-
   {% assets "home_css" %}
   <link rel="stylesheet" href="{{ ASSET_URL }}">
   {% endassets %}
+
 
   {% assets "home_js" %}
   <script type="text/javascript" src="{{ ASSET_URL }}"></script>
@@ -22,27 +22,31 @@
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="/">NEXTAGRAM</a>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="display:flex">
+    <a class="navbar-brand" style="font-size:30px; width:400px" href="/">NEXTAGRAM</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="/users/new">Sign Up</a>
-        </li>
-        <li class="nav-item active">
-          <a class="nav-link" href="/sessions/new">Sign in</a>
-        </li>
-      </ul>
-      <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-      </form>
-    </div>
+    <form class="collapse navbar-collapse" id="navbarSupportedContent" action={{url_for('sessions.create')}}
+      method='POST'>
+      <div style="position:relative;left:100px">
+        <input type="hidden" name="csrf_token" value="{{csrf_token()}}" <div class="form-group">
+        <div class="form-group row">
+          <label for="email" class="col-sm-3 " style="color:aliceblue">Email</label>
+
+          <input type="email" class="col-sm-6" id="inputPassword" placeholder="eg. abc@hotmail.com" name="email">
+
+        </div>
+        <div class="form-group row" style="display:flex">
+          <label for="inputPassword" class="col-sm-3 " style="color:aliceblue">Password</label>
+          <input type="password" class="col-sm-6" style="display:inline-block" id="inputPassword" placeholder="Password"
+            name="password">
+          <button class="col-sm-2" style="margin-left:10px">Login</button>
+        </div>
+      </div>
+    </form>
   </nav>
 
   {% for error in errors if errors|length >0%}
