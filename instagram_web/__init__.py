@@ -8,6 +8,7 @@ from flask_assets import Environment, Bundle
 from .util.assets import bundles
 from models.user import User
 from app import login_manager
+from werkzeug import secure_filename
 
 
 assets = Environment(app)

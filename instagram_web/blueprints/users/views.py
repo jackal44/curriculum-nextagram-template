@@ -2,11 +2,47 @@ from flask import Blueprint, render_template, flash, request, redirect, url_for,
 from werkzeug.security import generate_password_hash
 from models.user import User
 from flask_login import login_user, current_user
+from werkzeug.utils import secure_filename
+from playhouse.hybrid import hybrid_property
+from instagram_web.util.helpers import *
+from config import S3_BUCKET
 
 
 users_blueprint = Blueprint('users',
                             __name__,
                             template_folder='templates')
+
+
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@hybrid_property
+def profile_image_url(self):
+    return AWS_S3_DOMAIN + self.image_path
+
+
+@users_blueprint.route("/upload", methods=["POST"])
+def upload_image():
+    if "user_file" not in request.files:
+        flash("No user_file key in request.files")
+        return redirect(url_for('users.edit_profile_pic'))
+
+    file = request.files["user_file"]
+
+    if file.filename == "":
+        return "Please select a file"
+
+    if file and allowed_file(file.filename):
+        file.filename = secure_filename(file.filename)
+        image_url = upload_file_to_s3(file, S3_BUCKET)
+        return str(image_url)
+
+    else:
+        return redirect("/")
 
 
 @users_blueprint.route('/new', methods=['get'])
@@ -31,7 +67,7 @@ def create():
 
 @users_blueprint.route('/image', methods=["GET"])
 def view():
-    return render_template('upload_image.html')
+    pass
 
 
 @users_blueprint.route('/<username_id>', methods=["GET"])
@@ -64,7 +100,7 @@ def edit(id):
 
 @users_blueprint.route('/edit_image', methods=['GET'])
 def edit_profile_pic():
-    return render_template('users/image_form.html')
+    return render_template('users/upload_form.html')
 
 
 @users_blueprint.route('/<id>', methods=['POST'])

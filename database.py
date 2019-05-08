@@ -1,8 +1,9 @@
 import os
 from urllib.parse import urlparse
 
-DB_TIMEOUT=300 # 5 minutes
-DB_POOL=5
+DB_TIMEOUT = 300  # 5 minutes
+DB_POOL = 5
+
 
 def parse_db_url(database_url):
     parsed = urlparse(database_url)
@@ -14,9 +15,9 @@ def parse_db_url(database_url):
         'database': parsed.path[1:]
     }
 
-def return_db():
-    db_config = parse_db_url(os.environ['DATABASE_URL'])
 
+def return_db():
+    db_config = parse_db_url(os.getenv('DATABASE_URL'))
     if os.getenv('MIGRATION', '0') == '1':
         from playhouse.postgres_ext import PostgresqlExtDatabase
 
@@ -38,5 +39,6 @@ def return_db():
             password=db_config.get('password', None),
             host=db_config.get('host', 'localhost'),
             port=db_config.get('port', '5432'))
+
 
 db = return_db()
