@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, flash, request, redirect, url_for, session
 from werkzeug.security import check_password_hash
 from models.user import User
-from flask_login import login_user, logout_user
+from flask_login import login_user, logout_user, current_user
 
 
 sessions_blueprint = Blueprint('sessions',
@@ -13,7 +13,7 @@ sessions_blueprint = Blueprint('sessions',
 def destroy():
     logout_user()
     flash('User has been successfully logged out')
-    return redirect(url_for('sessions.new'))
+    return redirect(url_for('users.new'))
 
 
 @sessions_blueprint.route('/new', methods=['get'])
@@ -23,7 +23,6 @@ def new():
 
 @sessions_blueprint.route('/try/test', methods=['GET'])
 def matt_test():
-    flash('you have successfully logged in')
     return render_template('try.html')
 
 
@@ -41,5 +40,7 @@ def create():
         return redirect(url_for('sessions.new'))
 
     else:
-        login_user(user, force=True)
-        return redirect(url_for('sessions.matt_test'))
+        flash("You have successfully logged in")
+        # login
+        login_user(user, remember=True)
+        return redirect(url_for('users.show', username_id=current_user.id))

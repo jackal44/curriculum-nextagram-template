@@ -19,3 +19,6 @@ class User(BaseModel):
 
     def is_authenticated():
         return True
+
+    def is_active():
+        return True

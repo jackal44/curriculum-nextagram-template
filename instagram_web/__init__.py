@@ -29,6 +29,17 @@ def handle_csrf_error(e):
     return render_template('csrf_error.html', reason=e.description), 400
 
 
+@app.errorhandler(500)
+def page_not_found(e):
+    return render_template('500.html')
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    # note that we set the 404 status explicitly
+    return render_template('404.html')
+
+
 @app.route("/")
 def home():
     return render_template('home.html')
