@@ -46,11 +46,6 @@ def page_not_found(e):
     return render_template('404.html')
 
 
-@app.route("/client_token", methods=["GET"])
-def client_token():
-    return gateway.client_token.generate()
-
-
 @app.route("/")
 def home():
     return render_template('home.html')
