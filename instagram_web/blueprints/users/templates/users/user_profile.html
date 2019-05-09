@@ -3,7 +3,7 @@
 {%block content%}
 <h1>welcome {{current_user.username}}!</h1>
 <img src="{{current_user.profile_pic}}" style="width:200px; height:200px; border-radius: 100px;" />
-<a><button>Donations</button></a>
+<a href={{url_for('donations.new')}}><button>Donations</button></a>
 <br></br>
 <h1>Photos</h1>
 

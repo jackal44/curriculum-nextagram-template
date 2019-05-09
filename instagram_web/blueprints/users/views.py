@@ -31,18 +31,17 @@ def create_user():
         return render_template('users/new.html', username=request.form['username'], email=request.form['email'], password=request.form['password'], errors=s.errors)
 
 
-@users_blueprint.route('/image', methods=["GET"])
-def view():
-    pass
-
-
 @users_blueprint.route('/<username_id>', methods=["GET"])
 def show(username_id):
-
     user_img = []
     for x in Image.select().where(Image.user_id == current_user.id):
         user_img.append(x.img)
     return render_template('users/user_profile.html', user_img=user_img)
+
+
+@users_blueprint.route('/image', methods=["GET"])
+def view():
+    pass
 
 
 @users_blueprint.route('/', methods=["GET"])

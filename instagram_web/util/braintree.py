@@ -13,3 +13,8 @@ gateway = braintree.BraintreeGateway(
         private_key=os.getenv(PRIVATE_KEY)
     )
 )
+
+
+@app.route("/client_token", methods=["GET"])
+def client_token():
+    return gateway.client_token.generate()
