@@ -1,51 +1,14 @@
 from flask import Blueprint, render_template, flash, request, redirect, url_for, session
 from werkzeug.security import generate_password_hash
 from models.user import User
+from models.image import Image
 from flask_login import login_user, current_user
 from werkzeug.utils import secure_filename
-from playhouse.hybrid import hybrid_property
-from instagram_web.util.helpers import *
-from config import S3_BUCKET
 
 
 users_blueprint = Blueprint('users',
                             __name__,
                             template_folder='templates')
-
-
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
-
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-@hybrid_property
-def profile_image_url(self):
-    return AWS_S3_DOMAIN + self.image_path
-
-
-@users_blueprint.route("/upload", methods=["POST"])
-def upload_profile_pic():
-    if "user_file" not in request.files:
-        flash("No user_file key in request.files")
-        return redirect(url_for('users.edit_profile_pic'))
-
-    file = request.files["user_file"]
-
-    if file.filename == "":
-        return "Please select a file"
-
-    if file and allowed_file(file.filename):
-        file.filename = secure_filename(file.filename)
-        image_url = upload_file_to_s3(file, S3_BUCKET)
-        update = User.update(profile_pic=image_url).where(
-            User.id == current_user.id)
-        update.execute()
-        return redirect(url_for('users.show', username_id=current_user.id))
-
-    else:
-        return redirect("/")
 
 
 @users_blueprint.route('/new', methods=['get'])
@@ -75,20 +38,16 @@ def view():
 
 @users_blueprint.route('/<username_id>', methods=["GET"])
 def show(username_id):
-    return render_template('users/user_profile.html')
 
-    # for person in User.select().where(User.id == username_id):
-    #     username = person.username
-    # return render_template('users/individual_user.html', username=username)
+    user_img = []
+    for x in Image.select().where(Image.user_id == current_user.id):
+        user_img.append(x.img)
+    return render_template('users/user_profile.html', user_img=user_img)
 
 
 @users_blueprint.route('/', methods=["GET"])
 def index():
     pass
-    # every_user = []
-    # for person in User:
-    #     every_user.append(person.username)
-    # return render_template('users/all_users.html', every_user=every_user)
 
 
 @users_blueprint.route('/<id>/edit', methods=['GET'])
@@ -99,21 +58,6 @@ def edit(id):
     else:
         flash("user not logged in, invalid request")
         return redirect(url_for('home'))
-
-
-@users_blueprint.route('/edit_image', methods=['GET'])
-def create_upload_pic():
-    return render_template('users/edit_profile.html')
-
-
-@users_blueprint.route('/edit_image', methods=['GET'])
-def edit_upload_pic():
-    return render_template('users/edit_upload_.html')
-
-
-@users_blueprint.route('/edit_image', methods=['GET'])
-def edit_profile_pic():
-    return render_template('users/edit_profile.html')
 
 
 @users_blueprint.route('/<id>', methods=['POST'])

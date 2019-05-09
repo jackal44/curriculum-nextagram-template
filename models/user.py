@@ -1,5 +1,6 @@
 from models.base_model import BaseModel
 import peewee as pw
+from playhouse.hybrid import hybrid_property
 
 
 class User(BaseModel):
@@ -7,7 +8,7 @@ class User(BaseModel):
     email = pw.CharField(unique=True)
     password = pw.CharField(unique=False)
     profile_pic = pw.CharField(
-        unique=False)
+        unique=False, null=True)
 
     def validate(self):
         duplicate_username = User.get_or_none(User.username == self.username)
@@ -21,6 +22,10 @@ class User(BaseModel):
 
     def is_authenticated():
         return True
+
+    @hybrid_property
+    def profile_image_url(self):
+        return AWS_S3_DOMAIN + self.image_path
 
     def is_active():
         return True

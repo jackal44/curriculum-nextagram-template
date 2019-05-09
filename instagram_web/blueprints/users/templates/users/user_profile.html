@@ -5,6 +5,9 @@
 <img src="{{current_user.profile_pic}}" style="width:200px; height:200px; border-radius: 100px;" />
 <br></br>
 <h1>Photos</h1>
+{%for x in user_img%}
+<img src="{{x}}" />
+{%endfor%}
 
 
 {%endblock%}

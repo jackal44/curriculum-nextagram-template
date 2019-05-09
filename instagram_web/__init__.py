@@ -4,6 +4,7 @@ from flask_wtf.csrf import CSRFProtect
 from flask import render_template, url_for, flash, request
 from instagram_web.blueprints.users.views import users_blueprint
 from instagram_web.blueprints.sessions.views import sessions_blueprint
+from instagram_web.blueprints.images.views import images_blueprint
 from flask_assets import Environment, Bundle
 from .util.assets import bundles
 from models.user import User
@@ -14,8 +15,10 @@ from werkzeug import secure_filename
 assets = Environment(app)
 assets.register(bundles)
 
-app.register_blueprint(sessions_blueprint, url_prefix="/sessions")
+
 app.register_blueprint(users_blueprint, url_prefix="/users")
+app.register_blueprint(images_blueprint, url_prefix="/images")
+app.register_blueprint(sessions_blueprint, url_prefix="/sessions")
 
 csrf = CSRFProtect(app)
 
