@@ -26,7 +26,7 @@ def profile_image_url(self):
 
 
 @users_blueprint.route("/upload", methods=["POST"])
-def upload_image():
+def upload_profile_pic():
     if "user_file" not in request.files:
         flash("No user_file key in request.files")
         return redirect(url_for('users.edit_profile_pic'))
@@ -39,7 +39,10 @@ def upload_image():
     if file and allowed_file(file.filename):
         file.filename = secure_filename(file.filename)
         image_url = upload_file_to_s3(file, S3_BUCKET)
-        return str(image_url)
+        update = User.update(profile_pic=image_url).where(
+            User.id == current_user.id)
+        update.execute()
+        return redirect(url_for('users.show', username_id=current_user.id))
 
     else:
         return redirect("/")
@@ -51,10 +54,10 @@ def new():
 
 
 @users_blueprint.route('/new/create', methods=['POST'])
-def create():
+def create_user():
     hashed_password = generate_password_hash(request.form['password'])
     s = User(username=request.form['username'],
-             email=request.form['email'], password=hashed_password)
+             email=request.form['email'], password=hashed_password, profile_pic="https://www.qualiscare.com/wp-content/uploads/2017/08/default-user.png")
 
     if s.save():
         flash("Successfully saved!")
@@ -72,7 +75,7 @@ def view():
 
 @users_blueprint.route('/<username_id>', methods=["GET"])
 def show(username_id):
-    return render_template('users/user_page.html')
+    return render_template('users/user_profile.html')
 
     # for person in User.select().where(User.id == username_id):
     #     username = person.username
@@ -91,7 +94,7 @@ def index():
 @users_blueprint.route('/<id>/edit', methods=['GET'])
 def edit(id):
     if current_user.is_authenticated:
-        return render_template('users/edit.html')
+        return render_template('users/edit_details.html')
 
     else:
         flash("user not logged in, invalid request")
@@ -99,8 +102,18 @@ def edit(id):
 
 
 @users_blueprint.route('/edit_image', methods=['GET'])
+def create_upload_pic():
+    return render_template('users/edit_profile.html')
+
+
+@users_blueprint.route('/edit_image', methods=['GET'])
+def edit_upload_pic():
+    return render_template('users/edit_upload_.html')
+
+
+@users_blueprint.route('/edit_image', methods=['GET'])
 def edit_profile_pic():
-    return render_template('users/upload_form.html')
+    return render_template('users/edit_profile.html')
 
 
 @users_blueprint.route('/<id>', methods=['POST'])
