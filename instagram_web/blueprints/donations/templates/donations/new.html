@@ -7,7 +7,7 @@
     <div id="dropin-container"></div>
     <button id="submit-button">Request payment method</button>
     <script>
-        var button = document.querySelector('#submit-button');
+        const button = document.querySelector('#submit-button');
 
         braintree.dropin.create({
             authorization: 'CLIENT_TOKEN_FROM_SERVER',

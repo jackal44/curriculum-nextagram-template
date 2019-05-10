@@ -7,11 +7,6 @@ donations_blueprint = Blueprint('donations',
                                 template_folder='templates')
 
 
-client_token = gateway.client_token.generate({
-    "customer_id": a_customer_id
-})
-
-
 @donations_blueprint.route("/", methods=["GET"])
 def new():
     return render_template('donations/new.html')
