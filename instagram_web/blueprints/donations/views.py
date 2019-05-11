@@ -9,9 +9,5 @@ donations_blueprint = Blueprint('donations',
 
 @donations_blueprint.route("/", methods=["GET"])
 def new():
-    return render_template('donations/new.html')
-
-
-@donations_blueprint.route("/client_token", methods=["GET"])
-def client_token():
-    return gateway.client_token.generate()
+    client_token = gateway.client_token.generate()
+    return render_template('donations/new.html', client_token=client_token)

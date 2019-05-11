@@ -7,4 +7,5 @@ import peewee as pw
 class Donation(BaseModel):
     user = pw.ForeignKeyField(User, null=True)
     image = pw.ForeignKeyField(Image, null=True)
-    amount = pw.IntegerField(null=False)
+    amount = pw.DecimalField(null=False, default=0.00, decimal_places=2)
+    payment_status = pw.BooleanField(null=False, default=False)

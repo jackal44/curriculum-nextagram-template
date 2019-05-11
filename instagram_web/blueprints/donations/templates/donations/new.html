@@ -1,24 +1,44 @@
-<head>
-    <meta charset="utf-8">
-    <script src="https://js.braintreegateway.com/web/dropin/1.18.0/js/dropin.min.js"></script>
-</head>
-<!-- vs code problem, saved the files but not saved. have to redo the whole thing -->
-
-<body>
+{%extends '_layout.html'%}
+{%block content%}
+<div id="dropin-wrapper">
+    <div id="checkout-message"></div>
     <div id="dropin-container"></div>
     <button id="submit-button">Request payment method</button>
-    <script>
-        const button = document.querySelector('#submit-button');
+</div>
+<script>
+    const button = document.querySelector('#submit-button');
+    client_token = '{{client_token}}';
+    braintree.dropin.create({
+        authorization: client_token,
+        container: '#dropin-container'
+    }, function (createErr, instance) {
+        button.addEventListener('click', function () {
+            instance.requestPaymentMethod(function (err, payload) {
+                $.ajax({
+                    type: "post",
+                    url: '/checkout',
+                    data: { 'paymentMethodNonce': payload.nonce }
+                }).done(function (result) {
+                    instance.teardown(function (teardownErr) {
+                        if (teardownErr) {
+                            console.error('Could not tear down Drop-in UIP');
+                        }
+                        else {
+                            console.info('Drop-in UI has been torn down');
+                            $('#submit-button').remove();
+                        }
+                    });
 
-        braintree.dropin.create({
-            authorization: 'CLIENT_TOKEN_FROM_SERVER',
-            container: '#dropin-container'
-        }, function (createErr, instance) {
-            button.addEventListener('click', function () {
-                instance.requestPaymentMethod(function (err, payload) {
-                    // Submit payload.nonce to your server
-                });
+                    if (result.success) {
+                        $('#checkout-message').html('<h1>Success</h1><p>Your Drop-in UI is working! Check your <a href="https://sandbox.braintreegateway.com/login">sandbox Control Panel</a>for your test transactions.</p><p>Refresh to try another transaction.</p>');
+                    }
+                    else {
+                        console.log(result);
+                        $('#checkout-message').html('<h1>Error</h1><p>Check your console.</p>');
+                    }
+                })
             });
         });
-    </script>
-</body>
+    });
+</script>
+{%endblock%}
