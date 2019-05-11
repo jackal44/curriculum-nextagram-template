@@ -32,7 +32,7 @@ def upload_profile_pic():
     if file and allowed_file(file.filename):
         file.filename = secure_filename(file.filename)
         image_url = upload_file_to_s3(file, S3_BUCKET)
-        update = User.update(profile_pic=image_url).where(
+        update = User.update(image_path=file.filename).where(
             User.id == current_user.id)
         update.execute()
         return redirect(url_for('users.show', username_id=current_user.id))
@@ -53,7 +53,7 @@ def create_upload_pic():
     if file and allowed_file(file.filename):
         file.filename = secure_filename(file.filename)
         image_url = upload_file_to_s3(file, S3_BUCKET)
-        image = Image.create(img=image_url, user_id=current_user.id)
+        image = Image.create(image_path=file.filename, user_id=current_user.id)
         image.save()
         return redirect(url_for('users.show', username_id=current_user.id))
 

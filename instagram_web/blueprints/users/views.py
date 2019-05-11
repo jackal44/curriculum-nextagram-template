@@ -20,7 +20,7 @@ def new():
 def create_user():
     hashed_password = generate_password_hash(request.form['password'])
     s = User(username=request.form['username'],
-             email=request.form['email'], password=hashed_password, profile_pic="https://www.qualiscare.com/wp-content/uploads/2017/08/default-user.png")
+             email=request.form['email'], password=hashed_password, image_path="default-user.png")
 
     if s.save():
         flash("Successfully saved!")
@@ -34,9 +34,15 @@ def create_user():
 @users_blueprint.route('/<username_id>', methods=["GET"])
 def show(username_id):
     user_img = []
-    for x in Image.select().where(Image.user_id == current_user.id):
-        user_img.append(x.img)
-    return render_template('users/user_profile.html', user_img=user_img)
+    for x in Image.select().where(Image.user_id == username_id):
+        user_img.append(x.image_url)
+    user = User.get_by_id(username_id)
+    return render_template('users/user_profile.html', user_img=user_img, user=user)
+
+
+@users_blueprint.route('/home/<username_id>', methods=["GET"])
+def show_home(username_id):
+    return render_template('users/home.html', User=User)
 
 
 @users_blueprint.route('/image', methods=["GET"])

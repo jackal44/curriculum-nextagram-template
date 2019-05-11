@@ -1,13 +1,14 @@
 from models.base_model import BaseModel
 import peewee as pw
 from playhouse.hybrid import hybrid_property
+from config import S3_LOCATION
 
 
 class User(BaseModel):
     username = pw.CharField(unique=True)
     email = pw.CharField(unique=True)
     password = pw.CharField(unique=False)
-    profile_pic = pw.CharField(
+    image_path = pw.CharField(
         unique=False, null=True)
 
     def validate(self):
@@ -25,7 +26,7 @@ class User(BaseModel):
 
     @hybrid_property
     def profile_image_url(self):
-        return AWS_S3_DOMAIN + self.image_path
+        return S3_LOCATION + self.image_path
 
     def is_active():
         return True
