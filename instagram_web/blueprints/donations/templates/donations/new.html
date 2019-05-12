@@ -1,44 +1,49 @@
 {%extends '_layout.html'%}
 {%block content%}
-<div id="dropin-wrapper">
-    <div id="checkout-message"></div>
-    <div id="dropin-container"></div>
-    <button id="submit-button">Request payment method</button>
+<div class="wrapper">
+    <div class="checkout container">
+        <h1>post #{{img_id}}</h1>
+        <form id="payment-form" method="post" action={{url_for('donations.complete_donation',id=img_id)}}>
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}" <div class="form-group">
+            <section class="form-group">
+                <label for="amount">
+                    <span class="input-label">Amount</span>
+                    <div class="input-wrapper amount-wrapper">
+                        <input id="amount" class="form-control" name="amount" type="tel" min="1" placeholder="Amount"
+                            value="10">
+                    </div>
+                </label>
+
+                <div class="bt-drop-in-wrapper">
+                    <div id="bt-dropin"></div>
+                </div>
+            </section>
+
+            <input type="hidden" id="nonce" name="payment_method_nonce" />
+            <button class="btn btn-success" type="submit" id="submit-button">Complete Donation</button>
+        </form>
+    </div>
 </div>
 <script>
-    const button = document.querySelector('#submit-button');
-    client_token = '{{client_token}}';
+    var form = document.querySelector('#payment-form');
     braintree.dropin.create({
-        authorization: client_token,
-        container: '#dropin-container'
-    }, function (createErr, instance) {
-        button.addEventListener('click', function () {
-            instance.requestPaymentMethod(function (err, payload) {
-                $.ajax({
-                    type: "post",
-                    url: '/checkout',
-                    data: { 'paymentMethodNonce': payload.nonce }
-                }).done(function (result) {
-                    instance.teardown(function (teardownErr) {
-                        if (teardownErr) {
-                            console.error('Could not tear down Drop-in UIP');
-                        }
-                        else {
-                            console.info('Drop-in UI has been torn down');
-                            $('#submit-button').remove();
-                        }
-                    });
+        authorization: '{{client_token}}',
+        container: '#bt-dropin'
 
-                    if (result.success) {
-                        $('#checkout-message').html('<h1>Success</h1><p>Your Drop-in UI is working! Check your <a href="https://sandbox.braintreegateway.com/login">sandbox Control Panel</a>for your test transactions.</p><p>Refresh to try another transaction.</p>');
-                    }
-                    else {
-                        console.log(result);
-                        $('#checkout-message').html('<h1>Error</h1><p>Check your console.</p>');
-                    }
-                })
-            });
+    }, function (createErr, instance) {
+        button.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            instance.requestPaymentMethod(function (err, payload) {
+                if (err) {
+                    console.log('Error', err);
+                    return;
+                }
+                // Add the nonce to the form and submit
+                document.querySelector('#nonce').value = payload.nonce;
+                form.Submit();
+            })
         });
-    });
+    })
 </script>
 {%endblock%}

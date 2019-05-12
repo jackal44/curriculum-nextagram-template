@@ -8,8 +8,8 @@
 
 <!-- images are here -->
 {%for x in user_img%}
-<div style="display:inline-block"><img src="{{x}}" style="width:250px;height:200px" />
-    <a href={{url_for('donations.new')}} style="display:block"><button>Donations</button></a>
+<div style="display:inline-block"><img src="{{x.image_url}}" style="width:250px;height:200px" />
+    <a href={{url_for('donations.new',img_id=x.id)}} style="display:block"><button>Donations</button></a>
 </div>
 {%endfor%}
 <a href="{{url_for('images.edit_upload_pic', id=current_user.id)}}">
