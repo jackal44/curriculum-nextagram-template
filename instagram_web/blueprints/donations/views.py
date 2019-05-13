@@ -6,11 +6,9 @@ from models.user import User
 from flask_login import current_user
 from instagram_web.util.sendgrid import send_email
 
-
 donations_blueprint = Blueprint('donations',
                                 __name__,
                                 template_folder='templates')
-
 
 TRANSACTION_SUCCESS_STATUSES = [
     braintree.Transaction.Status.Authorized,
@@ -23,9 +21,11 @@ TRANSACTION_SUCCESS_STATUSES = [
 ]
 
 client_token = gateway.client_token.generate()
+
+
 @donations_blueprint.route("/<img_id>", methods=["GET"])
 def new(img_id):
-    send_email()
+    # send_email()
     return render_template('donations/new.html', client_token=client_token, img_id=img_id)
 
 

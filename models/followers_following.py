@@ -1,10 +1,10 @@
-from models import base_model
+from models.base_model import BaseModel
 import peewee as pw
+from models.user import User
+from models.image import Image
 
 
-class FollowerFollowing (base_model)
-
-
-fan = pw.ForeignKeyField(User, backref='idol')
-idol = pw.ForeignKeyField(User, backref='fan')
-approved = pw.BackrefAccessor(default=False)
+class FollowerFollowing (BaseModel):
+    fan = pw.ForeignKeyField(User, backref='idol')
+    idol = pw.ForeignKeyField(User, backref='fan')
+    approved = pw.BooleanField(default=False)

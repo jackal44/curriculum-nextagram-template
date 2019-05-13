@@ -11,6 +11,10 @@ SECRET_KEY = os.urandom(32)
 DEBUG = True
 PORT = 5000
 
+MERCHANT_ID = os.environ.get("MERCHANT_ID")
+PUBLIC_KEY = os.environ.get("PUBLIC_KEY")
+PRIVATE_KEY = os.environ.get("PRIVATE_KEY")
+
 
 class Config(object):
     DEBUG = False

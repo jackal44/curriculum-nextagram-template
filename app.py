@@ -13,6 +13,7 @@ app = Flask('NEXTAGRAM', root_path=web_dir)
 # lets your application and flask-login work together
 login_manager = LoginManager()
 
+
 # initialization
 login_manager.init_app(app)
 

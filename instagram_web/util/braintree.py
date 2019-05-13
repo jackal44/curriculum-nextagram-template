@@ -1,12 +1,13 @@
 import braintree
 import os
+from config import MERCHANT_ID, PUBLIC_KEY, PRIVATE_KEY
 
 gateway = braintree.BraintreeGateway(
     braintree.Configuration(
         environment=braintree.Environment.Sandbox,
-        merchant_id=os.environ.get("MERCHANT_ID"),
-        public_key=os.environ.get("PUBLIC_KEY"),
-        private_key=os.environ.get("PRIVATE_KEY")
+        merchant_id=MERCHANT_ID,
+        public_key=PUBLIC_KEY,
+        private_key=PRIVATE_KEY
     )
 )
 

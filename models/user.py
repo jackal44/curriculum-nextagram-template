@@ -8,9 +8,12 @@ class User(BaseModel):
     username = pw.CharField(unique=True)
     email = pw.CharField(unique=True)
     password = pw.CharField(unique=False)
-    image_path = pw.CharField(
-        unique=False, null=True)
+    image_path = pw.CharField(unique=False, null=True)
     private = pw.BooleanField(default=False)
+
+    @hybrid_property
+    def profile_image_url(self):
+        return str(S3_LOCATION + self.image_path)
 
     def validate(self):
         duplicate_username = User.get_or_none(User.username == self.username)
@@ -24,10 +27,6 @@ class User(BaseModel):
 
     def is_authenticated():
         return True
-
-    @hybrid_property
-    def profile_image_url(self):
-        return S3_LOCATION + self.image_path
 
     def is_active():
         return True
