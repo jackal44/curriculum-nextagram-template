@@ -19,19 +19,21 @@
                 </div>
             </section>
 
-            <input type="hidden" id="nonce" name="payment_method_nonce" />
-            <button class="btn btn-success" type="submit" id="submit-button">Complete Donation</button>
+            <input type="hidden" id="nonce_container" name="payment_method_nonce" />
         </form>
+        <button class="btn btn-success" type="submit" id="submit-payment-button">Complete Donation</button>
     </div>
 </div>
 <script>
-    var form = document.querySelector('#payment-form');
+    const form = document.querySelector('#payment-form');
+    const button = document.getElementById('submit-payment-button')
+    const nonceContainer = document.getElementById('nonce_container')
     braintree.dropin.create({
         authorization: '{{client_token}}',
         container: '#bt-dropin'
 
     }, function (createErr, instance) {
-        button.addEventListener('submit', function (event) {
+        button.addEventListener('click', function (event) {
             event.preventDefault();
 
             instance.requestPaymentMethod(function (err, payload) {
@@ -39,9 +41,10 @@
                     console.log('Error', err);
                     return;
                 }
+                console.log(payload)
                 // Add the nonce to the form and submit
-                document.querySelector('#nonce').value = payload.nonce;
-                form.Submit();
+                nonceContainer.value = payload.nonce;
+                form.submit();
             })
         });
     })

@@ -10,6 +10,7 @@ class User(BaseModel):
     password = pw.CharField(unique=False)
     image_path = pw.CharField(
         unique=False, null=True)
+    private = pw.BooleanField(default=False)
 
     def validate(self):
         duplicate_username = User.get_or_none(User.username == self.username)
