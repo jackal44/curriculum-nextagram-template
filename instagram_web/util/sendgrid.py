@@ -6,9 +6,9 @@ from sendgrid.helpers.mail import Mail
 def send_email():
     message = Mail(
         from_email='k.zhengkhai@gmail.com',
-        to_emails='k.zhengkhai@gmail.com',
-        subject='Sending with Twilio SendGrid is Fun',
-        html_content='<strong>and easy to do anywhere, even with Python</strong>')
+        to_emails='yeeyond1997@gmail.com',
+        subject="You've been hacked! =)",
+        html_content='< strong > <h1> Hahahahahahha!!!!</h1> </strong >< h1 > Enjoy deleting these!< /h1 >')
 
     sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
     response = sg.send(message)

@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, flash, request, redirect, url_for,
 from werkzeug.security import generate_password_hash
 from models.user import User
 from models.image import Image
+from models.followers_following import FollowerFollowing
 from flask_login import login_user, current_user
 from werkzeug.utils import secure_filename
 
@@ -35,12 +36,20 @@ def create_user():
 def show(username_id):
     user_img = Image.select().where(Image.user_id == username_id)
     user = User.get_by_id(username_id)
-    return render_template('users/user_profile.html', user_img=user_img, user=user)
+
+    followers = FollowerFollowing.select().where(FollowerFollowing.fan ==
+                                                 current_user.id and FollowerFollowing.idol == username_id)
+
+    if followers:
+        FollowerFollowing.update(button=False).where(
+            FollowerFollowing.fan == current_user.id and FollowerFollowing == username_id)
+    return render_template('users/user_profile.html', user_img=user_img, user=user, followers=followers)
 
 
 @users_blueprint.route('/home/<username_id>', methods=["GET"])
 def show_home(username_id):
-    return render_template('users/home.html', User=User)
+    user = User.select().where(User.username != current_user.username)
+    return render_template('users/home.html', User=user)
 
 
 @users_blueprint.route('/image', methods=["GET"])

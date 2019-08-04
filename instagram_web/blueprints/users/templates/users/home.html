@@ -2,6 +2,7 @@
 
 {%block content%}
 <h1>Other users:</h1>
+
 {%for x in User%}
 <a href={{url_for('users.show',username_id=x.id)}}>
     <h2>{{x.username}}</h2>

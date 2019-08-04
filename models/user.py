@@ -10,6 +10,11 @@ class User(BaseModel):
     password = pw.CharField(unique=False)
     image_path = pw.CharField(unique=False, null=True)
     private = pw.BooleanField(default=False)
+    button_status = pw.BooleanField(default=True)
+
+    @hybrid_property
+    def is_private(self):
+        return True if self.private else False
 
     @hybrid_property
     def profile_image_url(self):
